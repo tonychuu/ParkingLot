@@ -2,7 +2,7 @@ package main;
 
 public class EntryGate implements Gate {
 	
-  public final int GATEID;
+  private final int GATEID;
 	  
   public EntryGate(int gateid) {
     GATEID = gateid;
