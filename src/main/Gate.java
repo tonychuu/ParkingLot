@@ -2,9 +2,27 @@ package main;
 
 public interface Gate {
 	
-	  public void allowCar();
+  /**
+   *Opens the gate.
+   *
+   *@param none
+   *@return none
+   */
+  public void openGate();
 
-	  public boolean check(ParkingLot lot);
+  /**
+   *Checks the parking lot for some information.
+   *
+   *@param none
+   *@return a boolean value
+   */
+  public boolean check(ParkingLot lot);
 	  
-	  public int getId();
-	}
+  /**
+   *Returns the gate's ID number.
+   *
+   *@param none
+   *@return the gate's ID number
+   */
+  public int getId();
+}

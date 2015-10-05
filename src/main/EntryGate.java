@@ -2,25 +2,45 @@ package main;
 
 public class EntryGate implements Gate {
 	
-	public final int GATEID;
+  public final int GATEID;
 	  
-	  public EntryGate(int gateid) {
-		  GATEID = gateid;
-	  }
+  public EntryGate(int gateid) {
+    GATEID = gateid;
+  }
 	
-	  public void allowCar() {
-	    //TODO open the gate
-	  }
+  /**
+   *Opens the gate.
+   *
+   *@param none
+   *@return none
+   */
+  public void openGate() {
+    System.out.println("Entry gate " + GATEID + " has been lifted.");
+  }
 
-	  public boolean check(ParkingLot lot) {
-	    if (lot.checkAvailability()){
-	      allowCar();
-	      return true;
-	    }
-	    return false;
-	  }
+  /**
+   *Checks the parking lot for a available stall and returns the result.
+   *If there is a stall available, it also opens the gate to allow the car in
+   *
+   *@param none
+   *@return A boolean, true if there is a free stall, false if not
+   */
+  public boolean check(ParkingLot lot) {
+    if (lot.removeAvailability()){
+      openGate();
+      return true;
+    } else {
+        return false;
+    }
+  }
 	  
-	  public int getId() {
-		  return GATEID;
-	  }
-	}
+  /**
+   *Returns the gate's ID number.
+   *
+   *@param none
+   *@return the gate's ID number
+   */
+  public int getId() {
+    return GATEID;
+  }
+}
