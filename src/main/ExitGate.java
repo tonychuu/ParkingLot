@@ -15,7 +15,12 @@ public class ExitGate implements Gate {
    *@return none
    */
   public void openGate() {
-    System.out.println("Exit gate " + GATEID + " has been lifted.");
+	try {
+      System.out.println("Exit gate " + GATEID + " has been lifted.");
+      Thread.sleep(10);
+	}catch (InterruptedException e) {
+		System.err.println("Thread interrupted");
+	}
   }
 
   /**

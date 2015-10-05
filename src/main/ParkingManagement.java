@@ -7,6 +7,8 @@ public class ParkingManagement {
   
   public static void main(String[] args) {
     ParkingLot lot = initialize();
+    String welcomemsg = "Welcome to Parking Lot Management System";
+    System.out.println(welcomemsg);
     start(lot);
   }
 
@@ -22,9 +24,6 @@ public class ParkingManagement {
     String notnumbererror = "Sorry, your input is not a number. Please try again.";
     String negativeerror = "Sorry, your input is a negative number. Please try again.";
     String zeroerror = "Sorry, you must enter a number greater than 0. Please try again.";
-
-    String welcomemsg = "Parking Lot Management System.";
-    System.out.println(welcomemsg);
     try {
       if (stalls <= 0) {
         if (stalls < 0) {
@@ -67,7 +66,7 @@ public class ParkingManagement {
    *@param none
    *@return A parking lot object
    */
-  public static ParkingLot initialize() {
+  public synchronized static ParkingLot initialize() {
     String notnumbererror = "Sorry, your input is not a number. Please try again.";
     String negativeerror = "Sorry, your input is a negative number. Please try again.";
     String zeroerror = "Sorry, you must enter a number greater than 0. Please try again.";
@@ -84,12 +83,19 @@ public class ParkingManagement {
           System.out.print(stallquestion);
           if (userInput.hasNextInt()) {
             stalls = userInput.nextInt();
+          }else {
+        	System.err.println(notnumbererror);
+            userInput.next();
+            Thread.sleep(100);
+            continue;
           }
           if (stalls < 0) {
             System.err.println(negativeerror + '\n');
+            Thread.sleep(100);
             continue;
           } else if (stalls == 0) {
             System.err.println(zeroerror + '\n');
+            Thread.sleep(100);
             continue;
           }
         }
@@ -97,25 +103,39 @@ public class ParkingManagement {
           System.out.print(entriesquestion);
           if (userInput.hasNextInt()) {
             entries = userInput.nextInt();
+          }else {
+        	System.err.println(notnumbererror);
+            userInput.next();
+            Thread.sleep(100);
+            continue;
           }
           if (entries < 0) {
             System.err.println(negativeerror + '\n');
+            Thread.sleep(100);
             continue;
           } else if (entries == 0) {
               System.err.println(zeroerror + '\n');
+              Thread.sleep(100);
               continue;
           }
         }
         if (exits <= 0) {
           System.out.print(exitsquestion);
-          if (userInput.hasNextLine()) {
+          if (userInput.hasNextInt()) {
             exits = userInput.nextInt();
+          }else {
+            System.err.println(notnumbererror);
+            userInput.next();
+            Thread.sleep(100);
+            continue;
           }
           if (exits < 0) {
             System.err.println(negativeerror + '\n');
+            Thread.sleep(100);
             continue;
           } else if (exits == 0) {
               System.err.println(zeroerror + '\n');
+              Thread.sleep(100);
               continue;
           }
         }
@@ -135,40 +155,55 @@ public class ParkingManagement {
    *@return none
    */
   public static synchronized void start(ParkingLot lot) {
-    String menumsg =  " 1. Add a car to parking lot\n 2. Remove a car from parking lot\n 3. Total number of cars in parking lot\n-1. Exit management system\nInput: ";
+    String menumsg =  "Please choose from the following options:\n 1. Add a car to parking lot\n 2. Remove a car from parking lot\n 3. Total number of cars in parking lot\n-1. Exit management system\nInput: ";
     String commanderror = "Sorry, please enter a valid command.";
     String gatenummsg = "Which gate is the car at? ";
     while(true) {
-      System.out.print(menumsg);
-      int input = 0;
+      try {
+        System.out.print(menumsg);
+        int input = 0;
 
-      if (userInput.hasNextInt()) {
-        input = userInput.nextInt();
-      } else {
-          System.err.println(commanderror);
-      }
-      switch(input) {
-        case 1: 
-          System.out.print(gatenummsg);
-          if (userInput.hasNextInt())
-            input = userInput.nextInt();
-            addCar(lot, input);
+        if (userInput.hasNextInt()) {
+          input = userInput.nextInt();
+        }else {
+          userInput.next();
+        }
+        switch(input) {
+          case 1: 
+            System.out.print(gatenummsg);
+            if (userInput.hasNextInt()) {
+              input = userInput.nextInt();
+              addCar(lot, input);
+            }else {
+              System.err.println(commanderror);
+        	  userInput.next();
+        	  Thread.sleep(100);
+            }
             break;
-        case 2: 
-          System.out.print(gatenummsg);
-          if (userInput.hasNextInt()) {
-            input = userInput.nextInt();
-          }
-          removeCar(lot, input);
-          break;
-        case 3: 
-          System.out.println("There are " + lot.getCurrentCars() + " cars in the parking lot");
-          break;
-        case -1: 
-          System.exit(0);
-          break;
-        default:
-          System.err.println(commanderror);
+          case 2: 
+            System.out.print(gatenummsg);
+            if (userInput.hasNextInt()) {
+              input = userInput.nextInt();
+              removeCar(lot, input);
+            }else {
+              System.err.println(commanderror);
+              userInput.next();
+              Thread.sleep(100);
+            }
+            break;
+          case 3: 
+            System.out.println("There is/are " + lot.getCurrentCars() + " car(s) in the parking lot\n");
+            break;
+          case -1: 
+            System.exit(0);
+            break;
+          default:
+            System.err.println(commanderror);
+            Thread.sleep(100);
+        }
+      }catch (Exception e) {
+    	  System.err.println("Thread was interrupted");
+    	  e.printStackTrace();
       }
     }
   }
@@ -184,11 +219,11 @@ public class ParkingManagement {
   public static synchronized void addCar(ParkingLot lot, int gateid) {
     EntryGate gate = lot.getEntryGate(gateid);
     if (gate == null) {
-      System.err.println("Sorry, no such gate exists. Try another gate.");
+      System.err.println("Sorry, no such gate exists. Try another gate.\n");
     } else {
         boolean result = gate.check(lot);
         if (result) {
-          System.out.println("Car has entered the parking lot");
+          System.out.println("Car has entered the parking lot\n");
         } else {
             System.err.println("Sorry, the parking lot is full");
         }
@@ -206,9 +241,11 @@ public class ParkingManagement {
   public static void removeCar(ParkingLot lot, int gateid) {
     ExitGate gate = lot.getExitGate(gateid);
     if (gate == null) {
-      System.err.println("Sorry, no such gate exists. Try another gate.");
+      System.err.println("Sorry, no such gate exists. Try another gate.\n");
     } else {
-        gate.check(lot);
+        if (gate.check(lot)) {
+        	System.out.println("A car has left the parking lot.\n");
+        }
     }
   }
 
